@@ -16,6 +16,9 @@ SET ( OUTPUT_ELF
         "${CMAKE_PROJECT_NAME}-${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.out"
         ) 
 
+SET ( CMAKE_C_FLAGS_RELEASE "-static" )
+
+
 
 ExternalProject_Add( nanogui
         PREFIX third_party_src/nanogui
@@ -25,7 +28,6 @@ ExternalProject_Add( nanogui
         CONFIGURE_COMMAND cmake -DCMAKE_INSTALL_PREFIX=<INSTALL_DIR> -DNANOGUI_BUILD_SHARED=NO -DNANOGUI_BUILD_EXAMPLE=NO
         INSTALL_COMMAND make install
         )
-
 
 find_package(PkgConfig)
 pkg_check_modules(X11 x11)
@@ -41,12 +43,9 @@ INCLUDE_DIRECTORIES (
     
     )
 
-LINK_DIRECTORIES ( 
-    ./third_party/nanogui/lib
-    )
-ADD_EXECUTABLE( ${OUTPUT_ELF} ${SRC_FILES} )
+ADD_EXECUTABLE( ${OUTPUT_ELF} ${SRC_FILES} ) 
 TARGET_LINK_LIBRARIES(${OUTPUT_ELF}
-    nanogui
+    ${CMAKE_SOURCE_DIR}/third_party/nanogui/lib/libnanogui.a
     dl
     pthread
     ${X11_LIBRARIES}
@@ -56,7 +55,3 @@ TARGET_LINK_LIBRARIES(${OUTPUT_ELF}
     ${XCURSOR_LIBRARIES}
     ${XINERAMA_LIBRARIES} 
     )
-
-
-
-
